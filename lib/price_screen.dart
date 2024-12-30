@@ -58,22 +58,47 @@ class _PriceScreenState extends State<PriceScreen> {
               ),
             ),
           ),
-          Wrap(
-            spacing: 8.0,
-            runSpacing: 8.0,
-            alignment: WrapAlignment.center,
-            children: currenciesList.map((currency) {
-              return ChoiceChip(
-                label: Text(currency),
-                selected: selectedCurrency == currency,
-                onSelected: (isSelected) {
-                  setState(() {
-                    selectedCurrency = currency;
-                    getData();
-                  });
-                },
-              );
-            }).toList(),
+          Container(
+            height: 80.0,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: currenciesList.length,
+              itemBuilder: (context, index) {
+                String currency = currenciesList[index];
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedCurrency = currency;
+                      getData();
+                    });
+                  },
+                  child: Container(
+                    width: 80.0,
+                    margin: EdgeInsets.symmetric(horizontal: 10.0),
+                    decoration: BoxDecoration(
+                      color: selectedCurrency == currency
+                          ? Colors.blueAccent
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(10.0),
+                      border: Border.all(
+                        color: Colors.lightBlueAccent,
+                        width: 2.0,
+                      ),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      currency,
+                      style: TextStyle(
+                        color: selectedCurrency == currency
+                            ? Colors.white
+                            : Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
