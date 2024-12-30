@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'coin_data.dart';
 
 class PriceScreen extends StatefulWidget {
   @override
@@ -6,6 +7,26 @@ class PriceScreen extends StatefulWidget {
 }
 
 class _PriceScreenState extends State<PriceScreen> {
+  String selectedCurrency = 'AUD';
+  String value = '?';
+
+  void getData() async {
+    try {
+      double data = await CoinData().getCoinData(selectedCurrency);
+      setState(() {
+        value = data.toStringAsFixed(0);
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +48,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  '1 BTC = ? USD',
+                  '1 BTC = $value $selectedCurrency',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
@@ -37,12 +58,22 @@ class _PriceScreenState extends State<PriceScreen> {
               ),
             ),
           ),
-          Container(
-            height: 150.0,
-            alignment: Alignment.center,
-            padding: EdgeInsets.only(bottom: 30.0),
-            color: Colors.lightBlue,
-            child: null,
+          Wrap(
+            spacing: 8.0,
+            runSpacing: 8.0,
+            alignment: WrapAlignment.center,
+            children: currenciesList.map((currency) {
+              return ChoiceChip(
+                label: Text(currency),
+                selected: selectedCurrency == currency,
+                onSelected: (isSelected) {
+                  setState(() {
+                    selectedCurrency = currency;
+                    getData();
+                  });
+                },
+              );
+            }).toList(),
           ),
         ],
       ),
